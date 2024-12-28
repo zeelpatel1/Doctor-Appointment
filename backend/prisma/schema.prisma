@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Patient{
+  id       Int      @id @default(autoincrement())
+  username String
+  email    String  @unique
+  password String
+  role     Role
+  wallet Wallet? @relation(fields: [walletId], references: [id])
+  walletId Int? @unique
+  discount Boolean @default(false)
+  appointments Appointment[]
+  doctorId Int?
+  doctor Doctor? @relation(fields: [doctorId], references: [id])
+  visitedDoctors VisitedDoctor[]
+}
+
+model VisitedDoctor{
+  id        Int     @id @default(autoincrement())
+  doctorId Int
+  patientId Int
+  fistVisit Boolean @default(false)
+  doctor Doctor @relation(fields: [doctorId],references: [id])
+  patient   Patient  @relation(fields: [patientId], references: [id])
+}
+
+model Doctor{
+  visitedDoctors VisitedDoctor[]
+  patients Patient[]
+  appointments Appointment[]
+  id       Int      @id @default(autoincrement())
+  username String
+  email    String  @unique
+  password String
+  name     String
+  education String
+  contact String
+  experience String
+  qualification String
+  role     Role
+}
+
+model Appointment {
+  id            Int       @id @default(autoincrement())
+  doctorId      Int
+  doctor        Doctor    @relation(fields: [doctorId], references: [id])
+  patient       Patient?  @relation(fields: [patientId], references: [id])
+  patientId     Int?      
+  date          DateTime  @default(now())
+  startTime     DateTime
+  endTime       DateTime
+  status        Status
+  maxPatient    Int
+  currentPatient Int
+  price          Float @default(0.00)
+}
+
+
+model Wallet{
+  id Int @id @default(autoincrement())
+  patient Patient?
+  balance Int  
+  transaction Transaction[]
+}
+
+model Transaction{
+  id String @id @default(uuid())
+  wallet Wallet @relation(fields: [walletId], references: [id])
+  walletId Int
+  type Type
+  amount Int
+  date DateTime @default(now())  
+}
+
+enum Type{
+  credit
+  debit
+}
+
+enum Status{
+  available
+  booked
+  completed
+  cancelled
+}
+
+enum Role{
+  doctor
+  patient
+}
