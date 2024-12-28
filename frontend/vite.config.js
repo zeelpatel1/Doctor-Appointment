@@ -7,4 +7,9 @@ export default defineConfig({
   build: {
     outDir: 'dist',
   },
+  server: {
+    mimeTypes: {
+      'application/javascript': ['js', 'jsx'], // Add jsx here
+    },
+  },
 })
