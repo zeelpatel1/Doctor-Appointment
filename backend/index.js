@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express');
 const app = express();
 const cors=require('cors')
+const port=process.env.PORT || 3000
 const cookieParser = require('cookie-parser');
 
 const authRoute=require('./routes/authRoutes')
@@ -23,6 +24,6 @@ app.use('/api/doctor',doctorRouter)
 app.use('/api/appointment',appointmentRouter)
 app.use('/api/patient',patientRouter)
 
-app.listen(process.env.PORT, () => {
+app.listen(port, () => {
     console.log('Server is running on port 3000');
 })
