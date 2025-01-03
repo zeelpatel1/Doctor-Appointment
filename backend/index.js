@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express');
 const app = express();
 const cors=require('cors')
@@ -22,6 +23,6 @@ app.use('/api/doctor',doctorRouter)
 app.use('/api/appointment',appointmentRouter)
 app.use('/api/patient',patientRouter)
 
-app.listen(4000, () => {
-    console.log('Server is running on port 4000');
+app.listen(process.env.PORT, () => {
+    console.log('Server is running on port 3000');
 })
